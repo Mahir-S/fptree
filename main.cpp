@@ -9,6 +9,7 @@ using namespace std;
 #define MAXN 500
 
 int freq[MAXN];
+int percent = 60;
 bool comp(int x,int y)
 {
 	if(freq[x] != freq[y])
@@ -19,21 +20,24 @@ bool comp(int x,int y)
 int main(int argc,char *argv[])
 {
 	memset(freq,0,sizeof(freq));
-	cout << argc << endl;
 
 	if(argc < 2)
 	{
 		cout << "Please specify dataset path as a command line paramter.\n";
 		return 0;
 	}
+
+
+
 	freopen(argv[1],"r",stdin);
-	freopen("out.txt","w",stdout);
+	//freopen("out.txt","w",stdout);
 
 	map<string,int> item_mapping;
 	map<int,string> reverse_map;
 
 	string line;
 	vector<vector<string>> transactions;
+	int number_of_transactions = 0;
 	while(getline(cin,line))
 	{
 		string temp = "";
@@ -61,8 +65,12 @@ int main(int argc,char *argv[])
 			item_mapping[temp]++;
 		}
 		transactions.push_back(v);
+		number_of_transactions++;
 	}
+	set_minsupport(3);
 
+//	set_minsupport((percent*number_of_transactions)/100);
+	
 	vector<pair<int,int>> frequencies;
 	int itemid = 1;
 
@@ -71,7 +79,6 @@ int main(int argc,char *argv[])
 		//it.second is the frequency
 
 		freq[itemid] = it.second;
-		cout << itemid << " " << freq[itemid] << " " << it.first <<  endl;;
 		
 		reverse_map[itemid] = it.first;
 		it.second = itemid;
@@ -80,9 +87,10 @@ int main(int argc,char *argv[])
 	
 	sort(frequencies.rbegin(),frequencies.rend());
 
-	Fptree * head = new Fptree();
-	head->root = new Fpnode();
-	head->root->itemid = 0;
+	Fptree * tree = new Fptree();
+	tree->root = new Fpnode();
+	tree->root->parent = NULL;
+	tree->root->itemid = 0;
 	for(auto t : transactions)
 	{
 		vector<int> local;
@@ -93,8 +101,19 @@ int main(int argc,char *argv[])
 
 		//sort(local.begin(),local.end(),comp);
 
-		insert_transaction(head,local);
+		insert_transaction(tree,local);
 	}
-	print_tree(head->root);
+
+	//print_tree(tree->root);
+	//print auxiliary pointers
+	vector<vector<int>> patterns = mine_frequent_itemsets(tree);
+	for(auto pattern : patterns)
+	{
+		for(auto item : pattern)
+			cout << item << " " ;
+		cout << endl;
+	}
+	cout << "end";
+
 	return 0;
 }
