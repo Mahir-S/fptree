@@ -18,7 +18,7 @@ bool comp(int x,int y)
 		return x < y;
 }
 
-int check = 0;
+
 
 vector<string> tokenize(string &line,int sz)
 {
@@ -34,10 +34,6 @@ vector<string> tokenize(string &line,int sz)
 		{
 
 			v.push_back(temp);
-			if(temp == "whole milk")
-				a = 1;
-			if(temp == "rolls/buns")
-				b = 1;
 			temp = "";
 		}
 		else
@@ -46,13 +42,10 @@ vector<string> tokenize(string &line,int sz)
 
 	if(temp != "")
 	{
-		if(temp == "whole milk")
-			a = 1;
-		if(temp == "rolls/buns")
-			b = 1;
+		
 		v.push_back(temp);
 	}
-	check += (a&b);
+	
 	return v;
 }
 int main(int argc,char *argv[])
@@ -119,7 +112,7 @@ int main(int argc,char *argv[])
 		minsupport = (number_of_transactions*percent)/100;
 	}
 	set_minsupport(minsupport);
-	cout << minsupport << " " << check <<endl;
+	cout << minsupport  <<endl;
 	
 	vector<pair<int,int>> frequencies;
 	int itemid = 1;

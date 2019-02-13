@@ -6,6 +6,14 @@ Example usage :
 
 g++ main.cpp -o fptree
 
-fptree datasets/groceries.csv 20
+fptree datasets/groceries.csv -p 20
+
+or 
+
+fptree datasets/groceries.csv -n 100
+
+The -p specifies minimum support as a percentage of total transactions
+
+The -n specifies minimum support directly as a number
 
 The output would be generated in a file named frequent_itemsets.txt
