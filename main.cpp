@@ -77,15 +77,16 @@ int main(int argc,char *argv[])
 		vector<string> itemset =  tokenize(line,sz) ;
 		for(auto item : itemset)
 		{
-			cerr << item << " " ;
+			
 			item_mapping[item]++;
 		}
-		cerr << endl;
+		
 		transactions.push_back(itemset);	
 		number_of_transactions++;
 	}
 	int minsupport = (percent*number_of_transactions)/100; 
 	set_minsupport(minsupport);
+	
 	cout << minsupport << endl;
 	
 	vector<pair<int,int>> frequencies;
