@@ -5,6 +5,7 @@ To run compile main.cpp and run it with 2 command line parameter i.e. the path t
 Example usage :
 
 g++ main.cpp -o fptree
+
 fptree datasets/groceries.csv 20
 
 The output would be generated in a file named frequent_itemsets.txt
