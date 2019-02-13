@@ -80,11 +80,10 @@ void traverse_upwards(Fptree * tree,Fpnode * start)
 
 	cur = cur -> parent;
 	Fpnode * prevnode = NULL;
-	cerr << "start " << start->itemid << endl;
 	bool on_existing_path = 0;
+
 	while(cur!=NULL)
 	{
-		cout << cur->itemid << " " << cur->count << " " << cur->auxiliary <<  endl;
 		if(cur->auxiliary == NULL)
 		{
 			Fpnode * node;
@@ -95,7 +94,6 @@ void traverse_upwards(Fptree * tree,Fpnode * start)
 				{
 					prevnode->parent = node;
 					node->children.push_back(prevnode);
-					cout << "children " << prevnode->itemid << endl; 
 				}
 			}
 			else
@@ -137,7 +135,7 @@ void traverse_upwards(Fptree * tree,Fpnode * start)
 
 				cur->auxiliary->children.push_back(prevnode);
 				prevnode->parent = cur->auxiliary;
-				cout << "aux child" << " " << prevnode->itemid << endl;
+
 			}
 			on_existing_path = 1;
 			cur->auxiliary->count += prevcount;
@@ -178,13 +176,14 @@ vector<vector<int>> build_conditional_fptree(Fptree * tree,int item)
 		cnt += cur->count;
 		cur = cur->next;
 	}
+
 	if(cnt < MINSUP)
 	{
 		return vector<vector<int>>();//return empty vector of vector;
 	}
-	cerr << item << " " << cnt << endl;;
-	cur = tree->table[item].first;
 	//actual construction
+	
+	cur = tree->table[item].first;
 	while(cur != NULL)
 	{
 		traverse_upwards(newtree,cur);
@@ -198,20 +197,13 @@ vector<vector<int>> build_conditional_fptree(Fptree * tree,int item)
 		clear_auxiliary_pointers(cur);
 		cur = cur->next;
 	}
-	print_tree(newtree->root);
+
 	vector<vector<int>> pattern = mine_frequent_itemsets(newtree);
+	
 	for(auto &v : pattern)
 		v.push_back(item);
-	
 	pattern.push_back(vector<int>(1,item));
-	cout <<"printing pattern on conditional of " << item << endl;
-	for(auto it: pattern)
-	{
-		for(auto v:it)
-			cout << v << " ";
-		cout << endl;
-	}
-	cout <<"finish" << endl;
+	
 	return pattern;
 }
 

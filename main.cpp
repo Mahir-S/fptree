@@ -9,13 +9,36 @@ using namespace std;
 #define MAXN 500
 
 int freq[MAXN];
-int percent = 60;
+int percent = 33;
 bool comp(int x,int y)
 {
 	if(freq[x] != freq[y])
 		return freq[x] > freq[y];
 	else
 		return x < y;
+}
+vector<string> tokenize(string &line,int sz)
+{
+	vector<string> v;
+	string temp = "";
+	for(int i = 0;i < sz ;i++)
+	{
+		
+		if(line[i] == ',')
+		{
+
+			v.push_back(temp);
+			temp = "";
+		}
+		else
+			temp += line[i];
+	}
+
+	if(temp != "")
+	{
+		v.push_back(temp);
+	}
+	return v;
 }
 int main(int argc,char *argv[])
 {
@@ -26,11 +49,15 @@ int main(int argc,char *argv[])
 		cout << "Please specify dataset path as a command line paramter.\n";
 		return 0;
 	}
+	if(argc == 3)
+	{
+		int z = atoi(argv[2]);
+		percent = z;
 
+	}
 
 
 	freopen(argv[1],"r",stdin);
-	//freopen("out.txt","w",stdout);
 
 	map<string,int> item_mapping;
 	map<int,string> reverse_map;
@@ -38,6 +65,7 @@ int main(int argc,char *argv[])
 	string line;
 	vector<vector<string>> transactions;
 	int number_of_transactions = 0;
+	
 	while(getline(cin,line))
 	{
 		string temp = "";
@@ -45,41 +73,28 @@ int main(int argc,char *argv[])
 		int sz = line.size();
 		if((int)line[sz-1] == 13)
 			sz--;
-		for(int i = 0;i < sz ;i++)
-		{
-			
-			if(line[i] == ',')
-			{
 
-				item_mapping[temp]++;
-				v.push_back(temp);
-				temp = "";
-			}
-			else
-				temp += line[i];
-		}
-
-		if(temp != "")
+		vector<string> itemset =  tokenize(line,sz) ;
+		for(auto item : itemset)
 		{
-			v.push_back(temp);
-			item_mapping[temp]++;
+			cerr << item << " " ;
+			item_mapping[item]++;
 		}
-		transactions.push_back(v);
+		cerr << endl;
+		transactions.push_back(itemset);	
 		number_of_transactions++;
 	}
-	set_minsupport(3);
-
-//	set_minsupport((percent*number_of_transactions)/100);
+	int minsupport = (percent*number_of_transactions)/100; 
+	set_minsupport(minsupport);
+	cout << minsupport << endl;
 	
 	vector<pair<int,int>> frequencies;
 	int itemid = 1;
-
 	for(auto &it : item_mapping)
 	{
 		//it.second is the frequency
 
 		freq[itemid] = it.second;
-		
 		reverse_map[itemid] = it.first;
 		it.second = itemid;
 		itemid++;
@@ -96,24 +111,29 @@ int main(int argc,char *argv[])
 		vector<int> local;
 		for(auto s : t)
 		{
+			cerr << s << " " << item_mapping[s] << endl;
+			if(freq[item_mapping[s]] >= minsupport)
 			local.push_back(item_mapping[s]);
 		}
-
+		//IMPORTANT
 		//sort(local.begin(),local.end(),comp);
-
-		insert_transaction(tree,local);
+		
+		if(local.size() > 0)
+			insert_transaction(tree,local);
 	}
 
 	//print_tree(tree->root);
 	//print auxiliary pointers
 	vector<vector<int>> patterns = mine_frequent_itemsets(tree);
+
+	freopen("out.txt","w",stdout);
 	for(auto pattern : patterns)
 	{
 		for(auto item : pattern)
-			cout << item << " " ;
+			cout << reverse_map[ item ]<< " " ;
 		cout << endl;
 	}
-	cout << "end";
+
 
 	return 0;
 }
