@@ -17,10 +17,16 @@ bool comp(int x,int y)
 	else
 		return x < y;
 }
+
+int check = 0;
+
 vector<string> tokenize(string &line,int sz)
 {
 	vector<string> v;
 	string temp = "";
+	int a,b;
+	a = 0;
+	b = 0;
 	for(int i = 0;i < sz ;i++)
 	{
 		
@@ -28,6 +34,10 @@ vector<string> tokenize(string &line,int sz)
 		{
 
 			v.push_back(temp);
+			if(temp == "whole milk")
+				a = 1;
+			if(temp == "rolls/buns")
+				b = 1;
 			temp = "";
 		}
 		else
@@ -36,23 +46,41 @@ vector<string> tokenize(string &line,int sz)
 
 	if(temp != "")
 	{
+		if(temp == "whole milk")
+			a = 1;
+		if(temp == "rolls/buns")
+			b = 1;
 		v.push_back(temp);
 	}
+	check += (a&b);
 	return v;
 }
 int main(int argc,char *argv[])
 {
 	memset(freq,0,sizeof(freq));
+	int minsupport = 0;
 
 	if(argc < 2)
 	{
 		cout << "Please specify dataset path as a command line paramter.\n";
 		return 0;
 	}
-	if(argc == 3)
+
+
+	if(argc == 4)
 	{
-		int z = atoi(argv[2]);
-		percent = z;
+		if(strcmp(argv[2],"-p") == 0)
+		{
+			int z = atoi(argv[3]);
+			percent = z;	
+		}
+		else
+		{
+			int z = atoi(argv[3]);
+			minsupport = z;
+			percent = 0;
+		}
+		
 
 	}
 
@@ -84,10 +112,14 @@ int main(int argc,char *argv[])
 		transactions.push_back(itemset);	
 		number_of_transactions++;
 	}
-	int minsupport = (percent*number_of_transactions)/100; 
-	set_minsupport(minsupport);
+
 	
-	cout << minsupport << endl;
+	if(percent!=0)
+	{
+		minsupport = (number_of_transactions*percent)/100;
+	}
+	set_minsupport(minsupport);
+	cout << minsupport << " " << check <<endl;
 	
 	vector<pair<int,int>> frequencies;
 	int itemid = 1;
@@ -129,7 +161,7 @@ int main(int argc,char *argv[])
 	for(auto pattern : patterns)
 	{
 		for(auto item : pattern)
-			cout << reverse_map[ item ]<< " " ;
+			cout << reverse_map[ item ]<< "," ;
 		cout << endl;
 	}
 
