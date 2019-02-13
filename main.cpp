@@ -111,7 +111,6 @@ int main(int argc,char *argv[])
 		vector<int> local;
 		for(auto s : t)
 		{
-			cerr << s << " " << item_mapping[s] << endl;
 			if(freq[item_mapping[s]] >= minsupport)
 			local.push_back(item_mapping[s]);
 		}
@@ -122,11 +121,10 @@ int main(int argc,char *argv[])
 			insert_transaction(tree,local);
 	}
 
-	//print_tree(tree->root);
-	//print auxiliary pointers
+	
 	vector<vector<int>> patterns = mine_frequent_itemsets(tree);
 
-	freopen("out.txt","w",stdout);
+	freopen("frequent_itemsets.txt","w",stdout);
 	for(auto pattern : patterns)
 	{
 		for(auto item : pattern)
