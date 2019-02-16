@@ -141,7 +141,7 @@ int main(int argc,char *argv[])
 			local.push_back(item_mapping[s]);
 		}
 		//IMPORTANT
-		//sort(local.begin(),local.end(),comp);
+		sort(local.begin(),local.end(),comp);
 		
 		if(local.size() > 0)
 			insert_transaction(tree,local);

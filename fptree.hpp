@@ -23,7 +23,7 @@ struct Fptree
 };
 
 
-void print_tree(Fpnode * node)
+void print_tree(Fpnode * node)//helper function for debugging
 {
 	if(node->itemid != 0)
 		cout << node->itemid << " " << node->parent->itemid << " "  << node->auxiliary << endl;
